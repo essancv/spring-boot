@@ -1,0 +1,32 @@
+2026-03-17 08:46:18.708682Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM QUOTATIONS USERS [*]SIMULATIONS"; SQL statement:
+SELECT * FROM QUOTATIONS USERS SIMULATIONS [42000-224]
+2026-03-17 08:46:23.697877Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM QUOTATIONS USERS [*]SIMULATIONS QUOTATIONS"; SQL statement:
+SELECT * FROM QUOTATIONS USERS SIMULATIONS QUOTATIONS [42000-224]
+2026-03-17 15:16:15.989496Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS \000d\000a\000d\000aUPDATE [*]USERS VALUE (PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a')"; SQL statement:
+SELECT * FROM USERS 
+
+UPDATE USERS VALUE (PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a') [42000-224]
+2026-03-17 15:17:27.546833Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "UPDATE USERS SET PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a'[*]) WHERE ID=1"; SQL statement:
+UPDATE USERS SET PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a') WHERE ID=1 [42000-224]
+2026-03-17 15:17:49.441543Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS \000d\000a\000d\000aUPDATE [*]USERS SET PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a' WHERE ID=1"; SQL statement:
+SELECT * FROM USERS 
+
+UPDATE USERS SET PASSWORD='$2a$10$CwTycUXWue0Thq9StjUM0uJ8rY8dJv1nVbWcv16O3MHuvb6jVWe6a' WHERE ID=1 [42000-224]
+2026-03-18 10:20:07.296367Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS \000d\000a\000d\000adelete [*]from users where id is not 1"; SQL statement:
+SELECT * FROM USERS 
+
+delete from users where id is not 1 [42000-224]
+2026-03-18 10:20:10.293667Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS \000d\000a\000d\000adelete [*]from users where id is not 1"; SQL statement:
+SELECT * FROM USERS 
+
+delete from users where id is not 1 [42000-224]
+2026-03-18 10:20:13.381156Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete from users where id is not [*]1"; expected "OF, JSON, NULL, DISTINCT, TRUE, FALSE, UNKNOWN"; SQL statement:
+delete from users where id is not 1 [42001-224]
