@@ -18,7 +18,8 @@ export default function ProtectedLayout() {
           <li><Link to="usuario">1. Modificar datos de usuario</Link></li>
           <li><Link to="cotizaciones">2. Actualizar cotizaciones</Link></li>
           <li><Link to="simulacion">3. Simular</Link></li>
-          <li><button onClick={handleSalir}>4. Salir</button></li>
+          <li><Link to="cargalocal">4. Cargar cotizaciones</Link></li>
+          <li><button onClick={handleSalir}>5. Salir</button></li>
         </ul>
       </nav>
       <main className="content">

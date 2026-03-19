@@ -87,12 +87,14 @@ export default class SimuladorPension {
   }
 
   calcularDiasCotizadosReales() {
+
+    // Meses que se han cotizado (historico + simulacion)
     const hist = this.ordenarAsc(this.cotizaciones);
 
     const realesValidos = hist.filter(c => c.amount && c.amount > 0);
 
     console.log(
-      "calcularDiasCotizadosReales - Meses NO cotizados:",
+      "SimuladorPension - Meses NO cotizados :",
       hist.length - realesValidos.length
     );
 
@@ -114,6 +116,9 @@ export default class SimuladorPension {
   }
 
   detectarHuecosHistorico() {
+    // Meses sin cotizar , teniendo en cuenta todas las cotizaciones (historico + simuladas),si el 
+    // Flag de simular está a true
+
     const hist = this.ordenarAsc(this.cotizaciones);
     if (hist.length === 0) return false;
 
@@ -132,7 +137,7 @@ export default class SimuladorPension {
       m => !setHist.has(`${m.year}-${m.month}`)
     );
 
-    console.log("Meses faltantes en histórico:", faltantes.length);
+    console.log("SimuladorPension - Meses faltantes en histórico:", faltantes.length);
 
     return faltantes;
   }
@@ -156,22 +161,17 @@ export default class SimuladorPension {
     });
   }
 
-  construirMeses25Años() {
-    const cotizaciones = this.ordenarDesc(this.cotizacionesSimuladas);
-    const huecos = this.ordenarDesc(this.historico);
+  construirMeses25Años(meses:number) {
+
+    const cotizaciones = this.ordenarDesc(this.cotizaciones);
 
     const map = new Map<string, Cotizacion>();
 
     cotizaciones.forEach(c => map.set(`${c.year}-${c.month}`, c));
-    huecos.forEach(c => {
-      const key = `${c.year}-${c.month}`;
-      if (!map.has(key)) map.set(key, c);
-    });
-
     let lista = Array.from(map.values());
     lista = this.ordenarDesc(lista);
 
-    return lista.slice(0, 300);
+    return lista.slice(0, meses);
   }
 
   calcularBaseReguladora(meses25: Cotizacion[]) {
@@ -213,11 +213,16 @@ export default class SimuladorPension {
   }
 
   async simular() {
-    const diasReales = this.calcularDiasCotizadosReales();
-    const huecos = this.detectarHuecosHistorico();
+    console.log ('SimuladorPension - Usar Simulados : ' + this.usarSimulacion )
 
-    const meses25 = this.construirMeses25Años();
+    const diasReales = this.calcularDiasCotizadosReales();
+    const meses25 = this.construirMeses25Años(this.config.aniosSimular * 12 );  // Construir los meses que servirán para el cálculo
+    const huecos = this.detectarHuecosHistorico();  // Meses sin cotizar en el histórico
     const meses25rellenos = this.rellenaHuecosConBaseMinima(meses25);
+
+    console.log ('SimuladorPension - Días cotizados :' , diasReales.dias , "desde: " , diasReales.rango.desde ,"hasta:" , diasReales.rango.hasta  )
+    console.log ('SimuladorPension - Meses sin cotizar  (desde fecha de jubilación): ' ,  huecos? huecos.length: 0 )
+    console.log ('SimuladorPension - Meses simulacion desde : ' , meses25 [0] , ',hasta :',meses25 [this.config.aniosSimular * 12 -1 ] )
 
     const { baseMedia, baseReg, rango } =
       this.calcularBaseReguladora(meses25rellenos);

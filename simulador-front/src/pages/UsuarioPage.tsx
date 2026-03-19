@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 
 export default function UsuarioPage() {
-  const { token, id, userData, setUserData } = useAuth();
+  const { token, id, userData,setUserData } = useAuth();
   const [form, setForm] = useState(userData);
 
   // Cuando userData cambie (por ejemplo, tras login), sincronizamos el formulario
@@ -26,9 +26,19 @@ export default function UsuarioPage() {
       body: JSON.stringify(form),
     });
     if (res.ok) {
-      const updated = await res.json();
-      setUserData(updated);
-      setForm(updated);
+      const res = await await fetch(`/api/user/${encodeURIComponent(id)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
+      if (res.ok) {
+        const updated = await res.json ()
+        setUserData(updated);
+        setForm(updated);
+
+      }
     }
   };
 

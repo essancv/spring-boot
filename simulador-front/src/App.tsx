@@ -6,6 +6,7 @@ import ProtectedLayout from "./pages/ProtectedLayout";
 import UsuarioPage from "./pages/UsuarioPage";
 import CotizacionesPage from "./pages/CotizacionesPage";
 import SimulacionPage from "./pages/SimulacionPage";
+import CargaLocalPage from "./pages/CargaLocalPage";
 import './styles.css';
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { token } = useAuth();
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="usuario" element={<UsuarioPage />} />
             <Route path="cotizaciones" element={<CotizacionesPage />} />
             <Route path="simulacion" element={<SimulacionPage />} />
+            <Route path="cargalocal" element={<CargaLocalPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

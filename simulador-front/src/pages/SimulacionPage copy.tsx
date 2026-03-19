@@ -19,17 +19,6 @@ const SimulacionPage: React.FC = () => {
 
   const [config, setConfig] = useState<any>(null); // 👈 CONFIGURACIÓN CARGADA UNA VEZ
 
-  type SimulationItem = {
-    id: number;
-    name: string;
-    createdAt: string;
-    quotations: { amount: number; date: string }[];
-  };
-
-  const [simulations, setSimulations] = useState<SimulationItem[]>([]);
-  const [selectedSimulationId, setSelectedSimulationId] = useState<number | null>(null);
-  const [nuevoNombreSimulacion, setNuevoNombreSimulacion] = useState("");
-
   const [mostrarPopup, setMostrarPopup] = useState(false);
 
   if (!userData) return null;
@@ -55,24 +44,6 @@ const SimulacionPage: React.FC = () => {
     };
     cargarConfig();
   }, []);
-
-  // 🔵 Cargar lista de simulaciones guardadas
-  const cargarSimulaciones = async () => {
-    if (!token || !id) return;
-
-    const res = await fetch(`/api/user/${encodeURIComponent(id)}/simulations`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!res.ok) return;
-
-    const data: SimulationItem[] = await res.json();
-    setSimulations(data);
-  };
-
-  useEffect(() => {
-    cargarSimulaciones();
-  }, [token, id]);
 
   // 🔵 Cargar histórico y meses simulados
   useEffect(() => {
@@ -146,42 +117,6 @@ const SimulacionPage: React.FC = () => {
 
     cargar();
   }, [token, id]);
-
-  // 🔵 Actualizar área 2 al seleccionar simulación guardada
-  useEffect(() => {
-    if (selectedSimulationId == null) return;
-
-    const selected = simulations.find(s => s.id === selectedSimulationId);
-    if (!selected) return;
-
-    setCotizaciones(prev => {
-      const map = new Map(
-        selected.quotations.map(q => {
-          const d = new Date(q.date);
-          return [`${d.getFullYear()}-${d.getMonth() + 1}`, q.amount];
-        })
-      );
-
-      return prev.map(c => {
-        const key = `${c.year}-${c.month}`;
-        const amount = map.get(key);
-
-        return {
-          ...c,
-          amount: amount ?? c.amount,
-          isParo: false,
-          isConvenio: false,
-          isRelleno: false,
-          isHueco:
-            amount !== undefined
-              ? amount === 0
-              : c.isHueco ?? (c.amount == null || c.amount === 0),
-        };
-      });
-    });
-
-    setPorcentajeManual(null);
-  }, [selectedSimulationId, simulations]);
 
   // 🔵 Ejecutar simulación cuando cambien datos (pero solo si config está cargada)
   useEffect(() => {
@@ -347,42 +282,6 @@ const SimulacionPage: React.FC = () => {
     );
   };
 
-  const guardarSimulacion = async () => {
-    if (!token || !id) return;
-    const name = nuevoNombreSimulacion.trim();
-    if (!name) return;
-
-    const response = await fetch(
-      `/api/user/${encodeURIComponent(id)}/simulations`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name,
-          quotations: cotizaciones.map(c => ({
-            amount: c.amount ?? 0,
-            year: String(c.year),
-            month: String(c.month).padStart(2, "0"),
-          })),
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      console.error("No se pudo guardar la simulación");
-      return;
-    }
-
-    const saved: SimulationItem = await response.json();
-
-    setSimulations(prev => [...prev, saved]);
-    setSelectedSimulationId(saved.id);
-    setNuevoNombreSimulacion("");
-  };
-
   if (!resultado) return <div>Cargando simulación…</div>;
 
   const years = Array.from(new Set(cotizaciones.map(c => c.year))).sort();
@@ -390,46 +289,6 @@ const SimulacionPage: React.FC = () => {
   return (
     <div>
       <h1>Simulación de Cotizaciones</h1>
-
-      <section style={{ border: "1px solid #ccc", padding: "12px", marginBottom: "16px" }}>
-        <h2>1. Simulaciones disponibles</h2>
-
-        <label>
-          Seleccionar simulación:
-          <select
-            value={selectedSimulationId ?? ""}
-            onChange={e => {
-              const value = e.target.value;
-              setSelectedSimulationId(value ? Number(value) : null);
-            }}
-            style={{ marginLeft: "10px" }}
-          >
-            <option value="">-- Simulación actual (en curso) --</option>
-            {simulations.map(sim => (
-              <option key={sim.id} value={sim.id}>
-                {sim.name} ({new Date(sim.createdAt).toLocaleDateString("es-ES")})
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div style={{ marginTop: "10px" }}>
-          <input
-            type="text"
-            placeholder="Nombre para la nueva simulación"
-            value={nuevoNombreSimulacion}
-            onChange={e => setNuevoNombreSimulacion(e.target.value)}
-            style={{ width: "250px", marginRight: "10px" }}
-          />
-          <button onClick={guardarSimulacion} disabled={!nuevoNombreSimulacion.trim()}>
-            Guardar simulación
-          </button>
-        </div>
-      </section>
-
-      <section style={{ border: "1px solid #ccc", padding: "12px", marginBottom: "16px" }}>
-        <h2>2. Simulación activa</h2>
-      </section>
 
       <div style={{ marginBottom: "10px", fontSize: "18px" }}>
         <strong>Fecha de Jubilación:</strong>{" "}
